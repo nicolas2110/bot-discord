@@ -70,6 +70,6 @@ client = commands.Bot(command_prefix="!", intents=intents)
 
 async def main():
     await client.add_cog(MusicBot(client))
-    await client.start('MTI5NTIzMzY4NjUwNTI2MzEyNA.Gx8S_y.Gg_Vie7GfNQ9iZE49KPomCdpd-68xpLLenV5Wo')
+    await client.start('token')
 
 asyncio.run(main())
