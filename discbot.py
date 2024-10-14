@@ -1,9 +1,8 @@
-import os
+
 import discord
 from discord.ext import commands
 import yt_dlp
 import asyncio
-DISC_TOKEN = os.getenv('DISC_TOKEN')
 intents = discord.Intents.default()
 intents.message_content = True
 intents.voice_states = True
@@ -71,6 +70,6 @@ client = commands.Bot(command_prefix="!", intents=intents)
 
 async def main():
     await client.add_cog(MusicBot(client))
-    await client.start(DISC_TOKEN)
+    await client.start(MTI5NTI1NzczNDU2Mzc2MjMyOA.Gaf21_.iO7IMjexhOR8_bblNneaOnHomo4GG-VcBZCwRw)
 
 asyncio.run(main())
