@@ -9,7 +9,7 @@ import os
 SPOTIPY_CLIENT_ID = os.getenv('SPOTIPY_CLIENT_ID')
 SPOTIPY_CLIENT_SECRET = os.getenv('SPOTIPY_CLIENT_SECRET')
 DISCORD_TOKEN = os.getenv('DISCORD_TOKEN')
-SPOTIPY_REDIRECT_URI = 'http://localhost:8888/callback'  # Debe coincidir con la URI de redireccionamiento de tu aplicación de Spotify
+SPOTIPY_REDIRECT_URI = 'https://bot-discord-production-371e.up.railway.app/callback'  # Debe coincidir con la URI de redireccionamiento de tu aplicación de Spotify
 
 intents = discord.Intents.default()
 intents.message_content = True
