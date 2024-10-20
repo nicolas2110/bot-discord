@@ -31,7 +31,14 @@ class MusicBot(commands.Cog):
         
         await voice_channel.connect()
         await ctx.send(f"Conectado a {voice_channel.name}.")
-
+    @commands.command()
+    async def shuffle(self, ctx):
+        """Mezcla las canciones en la cola."""
+        if len(self.queue) > 1:
+            random.shuffle(self.queue)  # Mezcla la lista de canciones
+            await ctx.send("La cola de canciones ha sido mezclada.")
+        else:
+            await ctx.send("No hay suficientes canciones en la cola para mezclar.")
     @commands.command()
     async def leave(self, ctx):
         if ctx.voice_client:
@@ -41,12 +48,12 @@ class MusicBot(commands.Cog):
             await ctx.send("No estoy en ningún canal de voz.")
 
     @commands.command()
-    async def play(self, ctx, *, search):
+    async def play(self, ctx, *, search, insert=False):
         """Reproduce una canción de YouTube."""
         voice_channel = ctx.author.voice.channel if ctx.author.voice else None
         if not voice_channel:
             return await ctx.send("No estás en un canal de voz.")
-        
+    
         if not ctx.voice_client:
             await voice_channel.connect()
 
@@ -55,10 +62,18 @@ class MusicBot(commands.Cog):
                 info = ydl.extract_info(f"ytsearch:{search}", download=False)
                 if 'entries' in info:
                     info = info['entries'][0]
-                url = info['url']
-                title = info['title']
-                self.queue.append((url, title))
-                await ctx.send(f'Agregado a la cola: **{title}**')
+                    url = info['url']
+                    title = info['title']
+
+                if insert and ctx.voice_client.is_playing():
+                    # Inserta la canción justo después de la actual
+                    self.queue.insert(1, (url, title))
+                    await ctx.send(f'Agregado como la siguiente canción: **{title}**')
+                else:
+                    # Agrega la canción al final de la cola
+                    self.queue.append((url, title))
+                    await ctx.send(f'Agregado a la cola: **{title}**')
+
                 if not ctx.voice_client.is_playing():
                     await self.play_next(ctx)
 
@@ -188,4 +203,3 @@ async def main():
     await client.start(DISCORD_TOKEN)  # Reemplaza con tu token de bot de Discord
 
 asyncio.run(main())
-
