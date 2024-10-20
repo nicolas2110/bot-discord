@@ -47,6 +47,35 @@ class MusicBot(commands.Cog):
         else:
             await ctx.send("No estoy en ningún canal de voz.")
     @commands.command()
+    async def nxplay(self, ctx, *, search, insert=False):
+        """Reproduce una canción de YouTube."""
+        voice_channel = ctx.author.voice.channel if ctx.author.voice else None
+        if not voice_channel:
+            return await ctx.send("No estás en un canal de voz.")
+    
+        if not ctx.voice_client:
+            await voice_channel.connect()
+
+        async with ctx.typing():
+            with yt_dlp.YoutubeDL(YDL_OPTIONS) as ydl:
+                info = ydl.extract_info(f"ytsearch:{search}", download=False)
+                if 'entries' in info:
+                    info = info['entries'][0]
+                    url = info['url']
+                    title = info['title']
+
+                if insert and ctx.voice_client.is_playing():
+                    # Inserta la canción justo después de la actual
+                    self.queue.insert(1, (url, title))
+                    await ctx.send(f'Agregado como la siguiente canción: **{title}**')
+                else:
+                    # Agrega la canción al final de la cola
+                    self.queue.append((url, title))
+                    await ctx.send(f'Agregado a la cola: **{title}**')
+
+                if not ctx.voice_client.is_playing():
+                    await self.play_next(ctx)
+    @commands.command()
     async def play(self, ctx, *, search):
         """Reproduce una canción de YouTube."""
         voice_channel = ctx.author.voice.channel if ctx.author.voice else None
