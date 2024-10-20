@@ -115,7 +115,7 @@ class MusicBot(commands.Cog):
     @commands.command()
     async def splay(self, ctx, url):
         """Muestra el título de una canción específica de Spotify."""
-         sp = spotipy.Spotify(auth=SPOTIFY_ACCESS_TOKEN)
+        sp = spotipy.Spotify(auth=SPOTIFY_ACCESS_TOKEN)
 
         track_id = url.split("/")[-1].split("?")[0]  # Extraer el ID de la canción de la URL
         try:
