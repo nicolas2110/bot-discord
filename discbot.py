@@ -112,12 +112,14 @@ class MusicBot(commands.Cog):
             ctx.voice_client.stop()  # Detiene la reproducción actual
             await ctx.send("Canción saltada.")
            ## await self.play_next(ctx)  # Reproduce la siguiente canción en la cola
+    
     @commands.command()
     async def clear(self, ctx):
-        """Elimina toda la cola de canciones."""
+        """Elimina toda la cola de canciones y detiene la playlist."""
         self.queue.clear()  # Vaciar la lista de la cola
-        await ctx.send("La cola de canciones ha sido eliminada.") 
-        await self.skip(ctx)
+        self.is_playing_playlist = False  # Detiene la reproducción de la playlist
+        await ctx.send("La cola de canciones ha sido eliminada.")
+        await self.skip(ctx)  # Salta la canción actual
 
     @commands.command()
     async def queue(self, ctx):
@@ -154,10 +156,16 @@ class MusicBot(commands.Cog):
             
             await ctx.send("Canciones en la lista de reproducción:")
             await ctx.send("\n".join(song_titles))  # Enviar la lista de canciones al chat
-            for index, title in enumerate(song_titles):
-                track_titulo = title 
-                await self.sssplay(ctx, search=track_titulo)
 
+            self.is_playing_playlist = True  # Se está reproduciendo una playlist
+
+            # Reproducir canciones de la playlist
+            for title in song_titles:
+                if not self.is_playing_playlist:
+                    break  # Detener si se ha detenido la playlist (flag es False)
+                
+                await self.sssplay(ctx, search=title)
+                
         except Exception as e:
             await ctx.send(f"Ocurrió un error al obtener la lista de reproducción: {e}")
     @commands.command()
