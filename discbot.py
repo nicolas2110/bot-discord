@@ -34,7 +34,7 @@ class MusicBot(commands.Cog):
     @commands.command()
     async def shuffle(self, ctx):
         """Mezcla las canciones en la cola."""
-        if len(self.queue) > 1:
+        if len(self.queue) > 1:  # Verifica que haya al menos dos canciones en la cola
             random.shuffle(self.queue)  # Mezcla la lista de canciones
             await ctx.send("La cola de canciones ha sido mezclada.")
         else:
