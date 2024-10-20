@@ -10,7 +10,7 @@ SPOTIPY_CLIENT_ID = os.getenv('SPOTIPY_CLIENT_ID')
 SPOTIPY_CLIENT_SECRET = os.getenv('SPOTIPY_CLIENT_SECRET')
 DISCORD_TOKEN = os.getenv('DISCORD_TOKEN')
 SPOTIPY_REDIRECT_URI = 'https://bot-discord-production-371e.up.railway.app/callback'  # Debe coincidir con la URI de redireccionamiento de tu aplicación de Spotify
-
+SPOTIFY_ACCESS_TOKEN = os.getenv('SPOTIFY_ACCESS_TOKEN')
 intents = discord.Intents.default()
 intents.message_content = True
 intents.voice_states = True
@@ -115,10 +115,7 @@ class MusicBot(commands.Cog):
     @commands.command()
     async def splay(self, ctx, url):
         """Muestra el título de una canción específica de Spotify."""
-        sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=SPOTIPY_CLIENT_ID,
-                                                       client_secret=SPOTIPY_CLIENT_SECRET,
-                                                       redirect_uri=SPOTIPY_REDIRECT_URI,
-                                                       scope='user-read-playback-state'))
+         sp = spotipy.Spotify(auth=SPOTIFY_ACCESS_TOKEN)
 
         track_id = url.split("/")[-1].split("?")[0]  # Extraer el ID de la canción de la URL
         try:
@@ -133,10 +130,7 @@ class MusicBot(commands.Cog):
     @commands.command()
     async def splaylist(self, ctx, url):
         """Muestra los títulos de las canciones en una lista de reproducción de Spotify."""
-        sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=SPOTIPY_CLIENT_ID,
-                                                       client_secret=SPOTIPY_CLIENT_SECRET,
-                                                       redirect_uri=SPOTIPY_REDIRECT_URI,
-                                                       scope='playlist-read-private'))
+        sp = spotipy.Spotify(auth=SPOTIFY_ACCESS_TOKEN)
 
         playlist_id = url.split("/")[-1].split("?")[0]  # Extraer el ID de la lista de reproducción de la URL
         try:
