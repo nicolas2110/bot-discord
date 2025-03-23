@@ -7,6 +7,9 @@ import asyncio
 import os
 import random
 
+from flask import Flask
+import threading
+
 SPOTIPY_CLIENT_ID = os.getenv('SPOTIPY_CLIENT_ID')
 SPOTIPY_CLIENT_SECRET = os.getenv('SPOTIPY_CLIENT_SECRET')
 DISCORD_TOKEN = os.getenv('DISCORD_TOKEN')
@@ -220,5 +223,18 @@ async def on_ready():
 async def main():
     await client.add_cog(MusicBot(client))
     await client.start(DISCORD_TOKEN)  # Reemplaza con tu token de bot de Discord
+
+app = Flask(__name__)
+
+@app.route("/")
+def home():
+    return "Bot is running!"
+
+def run_web():
+    app.run(host="0.0.0.0", port=8000)
+
+# Iniciar el servidor Flask en un hilo separado
+threading.Thread(target=run_web, daemon=True).start()
+
 
 asyncio.run(main())
